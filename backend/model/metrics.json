@@ -1,0 +1,72 @@
+{
+  "random_forest": {
+    "precision": 0.9114,
+    "recall": 0.7579,
+    "f1_score": 0.8276,
+    "auc_roc": 0.9543,
+    "confusion_matrix": [
+      [
+        56644,
+        7
+      ],
+      [
+        23,
+        72
+      ]
+    ]
+  },
+  "logistic_regression": {
+    "precision": 0.0531,
+    "recall": 0.8737,
+    "f1_score": 0.1002,
+    "auc_roc": 0.9619,
+    "confusion_matrix": [
+      [
+        55172,
+        1479
+      ],
+      [
+        12,
+        83
+      ]
+    ]
+  },
+  "dataset_info": {
+    "total_transactions": 283726,
+    "fraud_count": 473,
+    "legitimate_count": 283253,
+    "fraud_percentage": 0.1667,
+    "features": [
+      "Time",
+      "V1",
+      "V2",
+      "V3",
+      "V4",
+      "V5",
+      "V6",
+      "V7",
+      "V8",
+      "V9",
+      "V10",
+      "V11",
+      "V12",
+      "V13",
+      "V14",
+      "V15",
+      "V16",
+      "V17",
+      "V18",
+      "V19",
+      "V20",
+      "V21",
+      "V22",
+      "V23",
+      "V24",
+      "V25",
+      "V26",
+      "V27",
+      "V28",
+      "Amount"
+    ]
+  }
+}

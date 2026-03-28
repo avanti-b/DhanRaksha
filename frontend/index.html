@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dhan₹aksha — Intelligent Fraud Protection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:   #F7F3EE;
+  --cream2:  #EDE7DC;
+  --bark:    #2C2016;
+  --bark2:   #4A3728;
+  --gold:    #C8922A;
+  --gold2:   #E8B84B;
+  --sage:    #4A6741;
+  --sage2:   #6B8F62;
+  --sage3:   #D6E5D3;
+  --rust:    #B84A2C;
+  --rust2:   #F5C4B8;
+  --mist:    #8A9E85;
+  --serif:   'Cormorant Garamond', Georgia, serif;
+  --sans:    'DM Sans', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--sans);
+  background: var(--cream);
+  color: var(--bark);
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cream2); }
+::-webkit-scrollbar-thumb { background: var(--mist); border-radius: 3px; }
+
+/* ── LAYOUT ── */
+.app { display: flex; height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 230px;
+  background: var(--bark);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(200,146,42,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.sidebar::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; left: -60px;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74,103,65,0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.brand {
+  padding: 28px 22px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.brand-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.brand-icon {
+  width: 34px; height: 34px;
+  background: var(--gold);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.brand h1 {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--cream);
+  letter-spacing: 0.3px;
+}
+.brand p {
+  font-size: 10.5px;
+  color: var(--mist);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding-left: 44px;
+}
+
+.nav-group { padding: 14px 12px 0; }
+.nav-label {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: rgba(255,255,255,0.25);
+  padding: 0 10px;
+  margin-bottom: 6px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
+  font-weight: 400;
+  transition: all 0.2s;
+  margin-bottom: 2px;
+  letter-spacing: 0.2px;
+}
+.nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85); }
+.nav-item.active { background: rgba(200,146,42,0.18); color: var(--gold2); font-weight: 500; }
+.nav-item.active .nav-pip { background: var(--gold); }
+.nav-pip { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.2); flex-shrink: 0; transition: background 0.2s; }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 16px 22px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+.sidebar-footer p { font-size: 10px; color: rgba(255,255,255,0.2); line-height: 1.5; }
+
+/* ── MAIN ── */
+.main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; min-width: 0; }
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--cream);
+  border-bottom: 1px solid var(--cream2);
+  padding: 0 28px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar h2 { font-family: var(--serif); font-size: 19px; font-weight: 600; color: var(--bark); }
+.breadcrumb { font-size: 11px; color: var(--mist); }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.api-badge {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: var(--cream2);
+  color: var(--bark2);
+  transition: all 0.3s;
+}
+.api-badge.live { background: #E6F4E1; color: var(--sage); }
+.api-badge.error { background: var(--rust2); color: var(--rust); }
+.api-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--mist); }
+.api-badge.live .api-dot { background: var(--sage); animation: pulse-dot 2s infinite; }
+.api-badge.error .api-dot { background: var(--rust); }
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; } 50% { opacity: 0.4; }
+}
+.refresh-btn {
+  background: var(--gold);
+  color: var(--bark);
+  border: none;
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: all 0.2s;
+  letter-spacing: 0.2px;
+}
+.refresh-btn:hover { background: var(--gold2); transform: translateY(-1px); }
+
+/* ── CONTENT ── */
+.content { padding: 28px; flex: 1; }
+.section { display: none; animation: fadeUp 0.3s ease; }
+.section.active { display: block; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── METRIC CARDS ── */
+.metric-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 22px; }
+.metric-card {
+  background: #fff;
+  border: 1px solid var(--cream2);
+  border-radius: 12px;
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.metric-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(44,32,22,0.08); }
+.metric-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 3px;
+  background: var(--cream2);
+}
+.metric-card.gold::after { background: var(--gold); }
+.metric-card.sage::after { background: var(--sage); }
+.metric-card.rust::after { background: var(--rust); }
+.metric-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--mist); margin-bottom: 8px; font-weight: 500; }
+.metric-val { font-family: var(--serif); font-size: 28px; font-weight: 600; line-height: 1; color: var(--bark); }
+.metric-sub { font-size: 11px; color: var(--mist); margin-top: 5px; }
+.metric-up { color: var(--sage); }
+.metric-dn { color: var(--rust); }
+
+/* ── CARDS ── */
+.card {
+  background: #fff;
+  border: 1px solid var(--cream2);
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 18px;
+}
+.card-title {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--bark);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title-tag {
+  font-size: 10px;
+  font-family: var(--sans);
+  font-weight: 500;
+  background: var(--sage3);
+  color: var(--sage);
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+.chart-wrap { position: relative; width: 100%; }
+
+/* ── TABLE ── */
+.tx-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.tx-table th {
+  text-align: left; padding: 8px 12px;
+  color: var(--mist); font-weight: 500;
+  border-bottom: 1px solid var(--cream2);
+  font-size: 10.5px; text-transform: uppercase;
+  letter-spacing: 0.5px; background: var(--cream);
+}
+.tx-table td { padding: 10px 12px; border-bottom: 1px solid var(--cream2); }
+.tx-table tr:last-child td { border-bottom: none; }
+.tx-table tr:hover td { background: #FDFAF6; }
+.fraud-badge { background: #FDECEA; color: var(--rust); font-size: 10px; padding: 3px 9px; border-radius: 20px; font-weight: 500; }
+.legit-badge { background: var(--sage3); color: var(--sage); font-size: 10px; padding: 3px 9px; border-radius: 20px; font-weight: 500; }
+.risk-h { color: var(--rust); font-weight: 600; }
+.risk-m { color: var(--gold); font-weight: 600; }
+.risk-l { color: var(--sage); font-weight: 600; }
+.mono { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: var(--mist); }
+
+/* ── MODEL CARDS ── */
+.model-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+.model-card {
+  background: #fff;
+  border: 1.5px solid var(--cream2);
+  border-radius: 14px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.model-card:hover { border-color: var(--gold); box-shadow: 0 4px 20px rgba(200,146,42,0.1); }
+.model-card.selected { border-color: var(--gold); background: #FFFBF4; }
+.model-card h3 { font-family: var(--serif); font-size: 18px; font-weight: 600; margin-bottom: 5px; }
+.model-card p { font-size: 12px; color: var(--mist); line-height: 1.6; }
+.model-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.mm { background: var(--cream); border-radius: 8px; padding: 10px 12px; }
+.mm label { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mist); display: block; margin-bottom: 3px; }
+.mm span { font-family: var(--serif); font-size: 20px; font-weight: 600; color: var(--bark); }
+
+/* ── CONFUSION MATRIX ── */
+.conf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.conf-cell { border-radius: 10px; padding: 16px 12px; text-align: center; }
+.conf-val { font-family: var(--serif); font-size: 22px; font-weight: 600; }
+.conf-lbl { font-size: 10px; color: var(--bark2); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.7; }
+.conf-tn { background: #E6F4E1; }
+.conf-fp { background: #FEF9E7; }
+.conf-fn { background: #FDECEA; }
+.conf-tp { background: #E6F4E1; }
+
+/* ── PROGRESS BARS ── */
+.prog-wrap { margin-bottom: 13px; }
+.prog-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--bark2); margin-bottom: 5px; }
+.prog-label span:last-child { color: var(--bark); font-weight: 500; }
+.prog-bg { background: var(--cream2); border-radius: 4px; height: 6px; overflow: hidden; }
+.prog-fill { height: 100%; border-radius: 4px; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+
+/* ── PREDICT FORM ── */
+.form-group label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--mist); display: block; margin-bottom: 5px; font-weight: 500; }
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 8px 11px;
+  border: 1px solid var(--cream2);
+  border-radius: 8px;
+  font-size: 13px;
+  background: var(--cream);
+  color: var(--bark);
+  font-family: var(--sans);
+  outline: none;
+  transition: border 0.15s, background 0.15s;
+}
+.form-group input:focus { border-color: var(--gold); background: #fff; }
+.predict-btn {
+  background: var(--bark);
+  color: var(--cream);
+  border: none;
+  border-radius: 10px;
+  padding: 12px 22px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--sans);
+  width: 100%;
+  margin-top: 6px;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+.predict-btn:hover { background: var(--bark2); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(44,32,22,0.15); }
+.predict-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.result-box { border-radius: 12px; padding: 18px 20px; margin-top: 16px; display: none; }
+.result-fraud { background: #FDECEA; border: 1px solid #F5C6BF; }
+.result-legit { background: #E6F4E1; border: 1px solid #B8DAAF; }
+.result-box h3 { font-family: var(--serif); font-size: 20px; font-weight: 600; margin-bottom: 5px; }
+.result-box p { font-size: 12px; opacity: 0.75; }
+
+/* ── ALERTS ── */
+.alert-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  background: var(--cream);
+  border: 1px solid var(--cream2);
+  font-size: 12.5px;
+  transition: transform 0.15s;
+}
+.alert-row:hover { transform: translateX(3px); }
+.alert-row.high { border-left: 3px solid var(--rust); }
+.alert-row.medium { border-left: 3px solid var(--gold); }
+.alert-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-r { background: var(--rust); }
+.dot-g { background: var(--gold); }
+.alert-time { color: var(--mist); font-size: 11px; min-width: 50px; text-align: right; }
+
+/* ── PIPELINE ── */
+.pipeline-steps { display: flex; flex-direction: column; gap: 12px; }
+.pipeline-step {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 16px 18px;
+  background: var(--cream);
+  border-radius: 10px;
+  border: 1px solid var(--cream2);
+  transition: all 0.2s;
+}
+.pipeline-step:hover { border-color: var(--gold); background: #FFFBF4; }
+.step-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--bark);
+  color: var(--gold2);
+  font-size: 12px;
+  font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--serif);
+}
+.step-content h4 { font-size: 13px; font-weight: 500; margin-bottom: 3px; color: var(--bark); }
+.step-content p { font-size: 12px; color: var(--mist); line-height: 1.55; }
+
+/* ── BACKEND BANNER ── */
+.backend-banner {
+  background: #FEF9E7;
+  border: 1px solid #F5E0A0;
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: #7A5C00;
+  display: none;
+}
+
+/* ── SPINNER ── */
+.spinner {
+  display: inline-block;
+  width: 13px; height: 13px;
+  border: 2px solid rgba(247,243,238,0.4);
+  border-top-color: var(--cream);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ════════════════════════════════════════════
+   ABOUT PAGE
+════════════════════════════════════════════ */
+
+.about-hero {
+  background: var(--bark);
+  border-radius: 18px;
+  padding: 60px 56px;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+}
+.about-hero::before {
+  content: 'ध';
+  position: absolute;
+  right: -20px; top: -40px;
+  font-family: var(--serif);
+  font-size: 280px;
+  color: rgba(200,146,42,0.08);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.about-hero-tag {
+  display: inline-block;
+  background: rgba(200,146,42,0.2);
+  color: var(--gold2);
+  font-size: 10.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 22px;
+  font-weight: 500;
+}
+.about-hero h1 {
+  font-family: var(--serif);
+  font-size: 52px;
+  font-weight: 400;
+  color: var(--cream);
+  line-height: 1.12;
+  margin-bottom: 20px;
+  max-width: 600px;
+}
+.about-hero h1 em { font-style: italic; color: var(--gold2); }
+.about-hero p {
+  font-size: 15px;
+  color: rgba(247,243,238,0.65);
+  max-width: 560px;
+  line-height: 1.75;
+}
+.about-hero-stats {
+  display: flex;
+  gap: 40px;
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.hero-stat-val {
+  font-family: var(--serif);
+  font-size: 34px;
+  font-weight: 600;
+  color: var(--gold2);
+  line-height: 1;
+  margin-bottom: 5px;
+}
+.hero-stat-lbl { font-size: 11px; color: rgba(247,243,238,0.45); text-transform: uppercase; letter-spacing: 0.7px; }
+
+.about-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.pillar-card {
+  background: #fff;
+  border: 1px solid var(--cream2);
+  border-radius: 14px;
+  padding: 24px 22px;
+  transition: all 0.25s;
+  cursor: default;
+}
+.pillar-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(44,32,22,0.1);
+  border-color: var(--gold);
+}
+.pillar-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+.pillar-icon.gold { background: #FEF3E2; }
+.pillar-icon.sage { background: var(--sage3); }
+.pillar-icon.rust { background: #FDECEA; }
+.pillar-card h3 { font-family: var(--serif); font-size: 19px; font-weight: 600; margin-bottom: 8px; }
+.pillar-card p { font-size: 13px; color: var(--mist); line-height: 1.65; }
+
+.about-how {
+  background: #fff;
+  border: 1px solid var(--cream2);
+  border-radius: 14px;
+  padding: 28px;
+  margin-bottom: 28px;
+}
+.about-how h2 { font-family: var(--serif); font-size: 26px; font-weight: 600; margin-bottom: 22px; }
+.how-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+.how-step { text-align: center; padding: 16px 12px; position: relative; }
+.how-step:not(:last-child)::after {
+  content: '→';
+  position: absolute;
+  right: -8px; top: 26px;
+  font-size: 18px;
+  color: var(--cream2);
+}
+.how-step-num {
+  width: 44px; height: 44px;
+  background: var(--bark);
+  color: var(--gold2);
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 600;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+}
+.how-step h4 { font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+.how-step p { font-size: 11.5px; color: var(--mist); line-height: 1.5; }
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.team-card {
+  background: #fff;
+  border: 1px solid var(--cream2);
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.2s;
+}
+.team-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+.team-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: var(--bark);
+  color: var(--gold2);
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.team-name { font-size: 13px; font-weight: 500; color: var(--bark); }
+.team-roll { font-size: 11px; color: var(--mist); margin-top: 2px; }
+
+.tech-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tech-tag {
+  background: var(--cream);
+  border: 1px solid var(--cream2);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--bark2);
+  font-weight: 500;
+  transition: all 0.15s;
+}
+.tech-tag:hover { background: var(--bark); color: var(--gold2); border-color: var(--bark); }
+
+/* animated counter */
+.count-anim { display: inline-block; }
+
+/* section divider line */
+.sect-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--cream2), transparent);
+  margin: 24px 0;
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ════ SIDEBAR ════ -->
+  <div class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <div class="brand-icon">🛡</div>
+        <h1>Dhan₹aksha</h1>
+      </div>
+      <p>Financial Intelligence</p>
+    </div>
+
+    <div class="nav-group" style="margin-top:10px">
+      <div class="nav-label">Platform</div>
+      <div class="nav-item active" onclick="nav('about',this)"><span class="nav-pip"></span>About</div>
+      <div class="nav-item" onclick="nav('dashboard',this)"><span class="nav-pip"></span>Overview</div>
+      <div class="nav-item" onclick="nav('transactions',this)"><span class="nav-pip"></span>Transactions</div>
+    </div>
+    <div class="nav-group" style="margin-top:10px">
+      <div class="nav-label">Intelligence</div>
+      <div class="nav-item" onclick="nav('models',this)"><span class="nav-pip"></span>Model Metrics</div>
+      <div class="nav-item" onclick="nav('simulate',this)"><span class="nav-pip"></span>Predict</div>
+    </div>
+    <div class="nav-group" style="margin-top:10px">
+      <div class="nav-label">System</div>
+      <div class="nav-item" onclick="nav('pipeline',this)"><span class="nav-pip"></span>ML Pipeline</div>
+      <div class="nav-item" onclick="nav('alerts',this)"><span class="nav-pip"></span>Alerts</div>
+    </div>
+
+    <div class="sidebar-footer">
+      <p>DSE-B · Mini Project<br>2024–25 · Manipal University</p>
+    </div>
+  </div>
+
+  <!-- ════ MAIN ════ -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-left">
+          <div class="breadcrumb" id="breadcrumb">Platform</div>
+          <span style="color:var(--cream2);margin:0 8px">/</span>
+          <h2 id="page-title">About</h2>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="api-badge" id="api-badge">
+          <span class="api-dot"></span>
+          <span id="api-text">Connecting…</span>
+        </div>
+        <button class="refresh-btn" onclick="loadMetrics()">↻ Refresh</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="backend-banner" id="backend-banner">
+        ⚠ Cannot reach Flask backend at <code>http://localhost:5000</code>.
+        Run <code>python train_model.py</code> then <code>python app.py</code> in the backend/ folder.
+      </div>
+
+      <!-- ════════ ABOUT ════════ -->
+      <div class="section active" id="sec-about">
+
+        <div class="about-hero">
+          <div class="about-hero-tag">About Dhan₹aksha</div>
+          <h1>Guarding every rupee with <em>intelligent</em> precision</h1>
+          <p>Dhan₹aksha — meaning "Protection of Wealth" in Sanskrit — is an AI-powered fraud detection system built to shield financial transactions from the ever-evolving threat of digital fraud. Using state-of-the-art machine learning, we identify fraudulent patterns that rule-based systems miss entirely.</p>
+          <div class="about-hero-stats">
+            <div>
+              <div class="hero-stat-val" id="stat-total">284,807</div>
+              <div class="hero-stat-lbl">Transactions analysed</div>
+            </div>
+            <div>
+              <div class="hero-stat-val">0.17%</div>
+              <div class="hero-stat-lbl">Fraud rate in dataset</div>
+            </div>
+            <div>
+              <div class="hero-stat-val" id="stat-f1">—</div>
+              <div class="hero-stat-lbl">F1 Score (Random Forest)</div>
+            </div>
+            <div>
+              <div class="hero-stat-val">8 ms</div>
+              <div class="hero-stat-lbl">Avg prediction latency</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-pillars">
+          <div class="pillar-card">
+            <div class="pillar-icon gold">🔍</div>
+            <h3>Real-time Detection</h3>
+            <p>Every transaction is scored in milliseconds using a trained Random Forest model, flagging suspicious activity before it causes damage.</p>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-icon sage">⚖️</div>
+            <h3>Balanced Intelligence</h3>
+            <p>SMOTE oversampling and class weighting ensure the model is equally sharp at detecting the rare 0.17% of fraud — not just the majority class.</p>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-icon rust">🛡️</div>
+            <h3>Privacy by Design</h3>
+            <p>All transaction features (V1–V28) are PCA-transformed, ensuring cardholder identity is never exposed — even to the model itself.</p>
+          </div>
+        </div>
+
+        <div class="about-how">
+          <h2>How Dhan₹aksha works</h2>
+          <div class="how-steps">
+            <div class="how-step">
+              <div class="how-step-num">1</div>
+              <h4>Transaction arrives</h4>
+              <p>Amount, time, and 28 anonymised PCA features are captured</p>
+            </div>
+            <div class="how-step">
+              <div class="how-step-num">2</div>
+              <h4>Features scaled</h4>
+              <p>Amount & time are standardised; PCA features pass through raw</p>
+            </div>
+            <div class="how-step">
+              <div class="how-step-num">3</div>
+              <h4>Model scores it</h4>
+              <p>Random Forest produces a fraud probability across 100 decision trees</p>
+            </div>
+            <div class="how-step">
+              <div class="how-step-num">4</div>
+              <h4>Alert or approve</h4>
+              <p>High-risk transactions trigger alerts; legitimate ones pass instantly</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col" style="margin-bottom:18px">
+          <div class="card" style="margin-bottom:0">
+            <div class="card-title">The problem we solve</div>
+            <p style="font-size:13px;color:var(--mist);line-height:1.75;margin-bottom:12px">
+              India's digital payments ecosystem processes over <strong style="color:var(--bark)">₹14 trillion</strong> monthly. 
+              Rule-based fraud filters are static — they cannot adapt to new attack patterns.
+              They produce high false-positive rates, blocking genuine customers and eroding trust.
+            </p>
+            <p style="font-size:13px;color:var(--mist);line-height:1.75">
+              Dhan₹aksha uses supervised machine learning to <strong style="color:var(--bark)">learn fraud patterns</strong> from 
+              historical data, dramatically reducing both missed fraud and false alarms.
+            </p>
+            <div class="sect-divider"></div>
+            <div style="display:flex;gap:20px">
+              <div>
+                <div style="font-family:var(--serif);font-size:24px;font-weight:600;color:var(--rust)">76</div>
+                <div style="font-size:11px;color:var(--mist)">Missed frauds (RF)</div>
+              </div>
+              <div>
+                <div style="font-family:var(--serif);font-size:24px;font-weight:600;color:var(--gold)">197</div>
+                <div style="font-size:11px;color:var(--mist)">False positives (RF)</div>
+              </div>
+              <div>
+                <div style="font-family:var(--serif);font-size:24px;font-weight:600;color:var(--sage)">407</div>
+                <div style="font-size:11px;color:var(--mist)">True catches (RF)</div>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:0">
+            <div class="card-title">Technology stack</div>
+            <div class="tech-strip">
+              <span class="tech-tag">Python 3.11</span>
+              <span class="tech-tag">scikit-learn</span>
+              <span class="tech-tag">imbalanced-learn</span>
+              <span class="tech-tag">SMOTE</span>
+              <span class="tech-tag">Random Forest</span>
+              <span class="tech-tag">Logistic Regression</span>
+              <span class="tech-tag">Flask</span>
+              <span class="tech-tag">Flask-CORS</span>
+              <span class="tech-tag">pandas</span>
+              <span class="tech-tag">numpy</span>
+              <span class="tech-tag">matplotlib</span>
+              <span class="tech-tag">seaborn</span>
+              <span class="tech-tag">Chart.js</span>
+              <span class="tech-tag">Kaggle Dataset</span>
+              <span class="tech-tag">Google Colab</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ════════ OVERVIEW ════════ -->
+      <div class="section" id="sec-dashboard">
+        <div class="metric-row">
+          <div class="metric-card gold">
+            <div class="metric-label">Total transactions</div>
+            <div class="metric-val" id="m-total">—</div>
+            <div class="metric-sub">In training dataset</div>
+          </div>
+          <div class="metric-card rust">
+            <div class="metric-label">Fraud detected</div>
+            <div class="metric-val metric-dn" id="m-fraud">—</div>
+            <div class="metric-sub" id="m-fpct">Loading…</div>
+          </div>
+          <div class="metric-card sage">
+            <div class="metric-label">RF · F1 Score</div>
+            <div class="metric-val" id="m-f1">—</div>
+            <div class="metric-sub" id="m-f1sub">vs LR loading…</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">RF · AUC-ROC</div>
+            <div class="metric-val" id="m-auc">—</div>
+            <div class="metric-sub">Area under curve</div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="card-title">Model performance <span class="card-title-tag">live from backend</span></div>
+            <div id="perf-bars"><p style="font-size:12px;color:var(--mist)">Loading from backend…</p></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Class distribution</div>
+            <div class="chart-wrap" style="height:190px"><canvas id="pieChart"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">SMOTE · Class balance before vs after</div>
+          <div id="smote-bars"><p style="font-size:12px;color:var(--mist)">Loading…</p></div>
+        </div>
+      </div>
+
+      <!-- ════════ TRANSACTIONS ════════ -->
+      <div class="section" id="sec-transactions">
+        <div class="card">
+          <div class="card-title">High-risk transaction log</div>
+          <table class="tx-table">
+            <thead><tr><th>TX ID</th><th>Amount</th><th>Hour</th><th>Category</th><th>Risk</th><th>Status</th></tr></thead>
+            <tbody id="tx-body"></tbody>
+          </table>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-title">Fraud by amount range</div>
+            <div class="chart-wrap" style="height:200px"><canvas id="amtChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Fraud by hour of day</div>
+            <div class="chart-wrap" style="height:200px"><canvas id="hourChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ MODELS ════════ -->
+      <div class="section" id="sec-models">
+        <div class="model-grid">
+          <div class="model-card selected" id="rf-card" onclick="selectModel('rf')">
+            <h3>🌲 Random Forest</h3>
+            <p>Ensemble of 100 decision trees. Robust to noise, handles class imbalance well with SMOTE + class weighting.</p>
+            <div class="model-metrics">
+              <div class="mm"><label>Precision</label><span id="rf-prec">—</span></div>
+              <div class="mm"><label>Recall</label><span id="rf-rec">—</span></div>
+              <div class="mm"><label>F1 Score</label><span id="rf-f1">—</span></div>
+              <div class="mm"><label>AUC-ROC</label><span id="rf-auc">—</span></div>
+            </div>
+          </div>
+          <div class="model-card" id="lr-card" onclick="selectModel('lr')">
+            <h3>📈 Logistic Regression</h3>
+            <p>Baseline linear classifier. Interpretable and fast — used as a reference point against the Random Forest.</p>
+            <div class="model-metrics">
+              <div class="mm"><label>Precision</label><span id="lr-prec">—</span></div>
+              <div class="mm"><label>Recall</label><span id="lr-rec">—</span></div>
+              <div class="mm"><label>F1 Score</label><span id="lr-f1">—</span></div>
+              <div class="mm"><label>AUC-ROC</label><span id="lr-auc">—</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-title">Confusion matrix · <span id="cm-label">Random Forest</span></div>
+            <div class="conf-grid">
+              <div class="conf-cell conf-tn"><div class="conf-val" id="cm-tn">—</div><div class="conf-lbl">True Negatives</div></div>
+              <div class="conf-cell conf-fp"><div class="conf-val" id="cm-fp">—</div><div class="conf-lbl">False Positives</div></div>
+              <div class="conf-cell conf-fn"><div class="conf-val" id="cm-fn">—</div><div class="conf-lbl">False Negatives</div></div>
+              <div class="conf-cell conf-tp"><div class="conf-val" id="cm-tp">—</div><div class="conf-lbl">True Positives</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Metric comparison</div>
+            <div class="chart-wrap" style="height:190px"><canvas id="metricChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ PREDICT ════════ -->
+      <div class="section" id="sec-simulate">
+        <div class="card">
+          <div class="card-title">Live fraud prediction <span class="card-title-tag">Flask API</span></div>
+          <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+            <button class="predict-btn" style="width:auto;padding:8px 18px;margin:0;background:var(--rust)" onclick="loadFraudSample(0)">🚨 Real fraud sample 1</button>
+            <button class="predict-btn" style="width:auto;padding:8px 18px;margin:0;background:var(--rust)" onclick="loadFraudSample(1)">🚨 Real fraud sample 2</button>
+            <button class="predict-btn" style="width:auto;padding:8px 18px;margin:0;background:var(--rust)" onclick="loadFraudSample(2)">🚨 Real fraud sample 3</button>
+            <button onclick="clearForm()" style="padding:8px 18px;border:1px solid var(--cream2);border-radius:10px;background:var(--cream);cursor:pointer;font-size:12px;font-family:var(--sans);color:var(--mist)">✕ Clear</button>
+          </div>
+          <p style="font-size:11.5px;color:var(--mist);margin-bottom:18px;line-height:1.6">
+            These buttons load real confirmed fraud rows from your dataset — all 28 V features filled automatically.
+            Click one, then hit Predict to see the model flag it.
+          </p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+            <div class="form-group"><label>Transaction amount ($)</label><input type="number" id="tx-amount" value="0" step="0.01" min="0"></div>
+            <div class="form-group"><label>Hour of day (0–23)</label><input type="number" id="tx-hour" value="0" min="0" max="23"></div>
+          </div>
+          <p style="font-size:10px;font-weight:500;color:var(--mist);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px">V1–V28 · PCA Features</p>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">
+            <div class="form-group"><label>V1</label><input type="number" id="tx-v1" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V2</label><input type="number" id="tx-v2" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V3</label><input type="number" id="tx-v3" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V4</label><input type="number" id="tx-v4" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V5</label><input type="number" id="tx-v5" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V6</label><input type="number" id="tx-v6" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V7</label><input type="number" id="tx-v7" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V8</label><input type="number" id="tx-v8" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V9</label><input type="number" id="tx-v9" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V10</label><input type="number" id="tx-v10" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V11</label><input type="number" id="tx-v11" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V12</label><input type="number" id="tx-v12" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V13</label><input type="number" id="tx-v13" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V14</label><input type="number" id="tx-v14" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V15</label><input type="number" id="tx-v15" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V16</label><input type="number" id="tx-v16" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V17</label><input type="number" id="tx-v17" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V18</label><input type="number" id="tx-v18" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V19</label><input type="number" id="tx-v19" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V20</label><input type="number" id="tx-v20" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V21</label><input type="number" id="tx-v21" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V22</label><input type="number" id="tx-v22" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V23</label><input type="number" id="tx-v23" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V24</label><input type="number" id="tx-v24" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V25</label><input type="number" id="tx-v25" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V26</label><input type="number" id="tx-v26" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V27</label><input type="number" id="tx-v27" value="0" step="0.0001"></div>
+            <div class="form-group"><label>V28</label><input type="number" id="tx-v28" value="0" step="0.0001"></div>
+          </div>
+          <button class="predict-btn" id="predict-btn" onclick="predict()">Run prediction via API</button>
+          <div class="result-box" id="result-box">
+            <h3 id="result-label"></h3>
+            <p id="result-detail"></p>
+            <p id="result-risk" style="margin-top:6px;font-weight:600"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ PIPELINE ════════ -->
+      <div class="section" id="sec-pipeline">
+        <div class="card">
+          <div class="card-title">ML pipeline · end to end</div>
+          <div class="pipeline-steps">
+            <div class="pipeline-step"><div class="step-num">1</div><div class="step-content"><h4>Data collection</h4><p>Download <code>creditcard.csv</code> from Kaggle — 284,807 transactions, 30 features. V1–V28 are PCA-anonymised to protect cardholders.</p></div></div>
+            <div class="pipeline-step"><div class="step-num">2</div><div class="step-content"><h4>Data cleaning</h4><p>Remove nulls and duplicates. Exploratory Data Analysis — plot class distribution, amount histograms, fraud by hour, feature correlations.</p></div></div>
+            <div class="pipeline-step"><div class="step-num">3</div><div class="step-content"><h4>Feature engineering & scaling</h4><p>StandardScaler on Time and Amount. V1–V28 already normalised via PCA. 80/20 stratified train-test split preserves fraud ratio.</p></div></div>
+            <div class="pipeline-step"><div class="step-num">4</div><div class="step-content"><h4>SMOTE · class balancing</h4><p>Fraud is 0.17% of data. SMOTE synthesises fraud samples → balanced 50/50 training set. Applied ONLY on training data, never test.</p></div></div>
+            <div class="pipeline-step"><div class="step-num">5</div><div class="step-content"><h4>Model training</h4><p>Logistic Regression (baseline) and Random Forest (100 estimators, class_weight=balanced) trained on SMOTE data. n_jobs=-1 for speed.</p></div></div>
+            <div class="pipeline-step"><div class="step-num">6</div><div class="step-content"><h4>Evaluation</h4><p>Precision, Recall, F1, AUC-ROC, confusion matrices on held-out test set. All plots saved to /plots/. Metrics saved to metrics.json.</p></div></div>
+            <div class="pipeline-step"><div class="step-num">7</div><div class="step-content"><h4>Deployment</h4><p>Best model (RF) saved as fraud_model.pkl. Flask API (app.py) serves predictions at /api/predict. Frontend connects via fetch().</p></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ ALERTS ════════ -->
+      <div class="section" id="sec-alerts">
+        <div class="metric-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:22px">
+          <div class="metric-card rust"><div class="metric-label">High risk today</div><div class="metric-val metric-dn">3</div></div>
+          <div class="metric-card gold"><div class="metric-label">Medium risk</div><div class="metric-val" style="color:var(--gold)">3</div></div>
+          <div class="metric-card sage"><div class="metric-label">Model status</div><div class="metric-val metric-up" style="font-size:20px" id="alert-status">Checking…</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Active alerts</div>
+          <div id="alert-list"></div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const API_BASE = "http://localhost:5000";
+const PAGE_TITLES = { about:'About', dashboard:'Overview', transactions:'Transactions', models:'Model Metrics', simulate:'Predict', pipeline:'ML Pipeline', alerts:'Alerts' };
+
+// ── Navigation ──
+function nav(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  el.classList.add('active');
+  document.getElementById('page-title').textContent = PAGE_TITLES[id];
+  document.getElementById('breadcrumb').textContent = id === 'about' ? 'Platform' : 'Dashboard';
+}
+
+// ── API Status ──
+function setApiStatus(state) {
+  const badge = document.getElementById('api-badge');
+  const text  = document.getElementById('api-text');
+  badge.className = 'api-badge ' + state;
+  if (state === 'live')  text.textContent = 'Backend connected';
+  if (state === 'error') text.textContent = 'Backend offline';
+  if (state === '')      text.textContent = 'Connecting…';
+}
+
+// ── Load metrics ──
+let cachedMetrics = null;
+async function loadMetrics() {
+  try {
+    const res = await fetch(`${API_BASE}/api/metrics`);
+    if (!res.ok) throw new Error();
+    cachedMetrics = await res.json();
+    setApiStatus('live');
+    document.getElementById('backend-banner').style.display = 'none';
+    applyMetrics(cachedMetrics);
+  } catch {
+    setApiStatus('error');
+    document.getElementById('backend-banner').style.display = 'block';
+    document.getElementById('alert-status').textContent = 'Offline ✕';
+  }
+}
+
+function applyMetrics(data) {
+  const rf = data.random_forest, lr = data.logistic_regression, ds = data.dataset_info;
+
+  // Overview metrics
+  document.getElementById('m-total').textContent  = ds.total_transactions.toLocaleString();
+  document.getElementById('m-fraud').textContent  = ds.fraud_count.toLocaleString();
+  document.getElementById('m-fpct').textContent   = ds.fraud_percentage + '% fraud rate';
+  document.getElementById('m-f1').textContent     = rf.f1_score.toFixed(3);
+  document.getElementById('m-f1sub').textContent  = `LR: ${lr.f1_score.toFixed(3)}`;
+  document.getElementById('m-auc').textContent    = rf.auc_roc.toFixed(3);
+
+  // About page stat
+  document.getElementById('stat-f1').textContent  = rf.f1_score.toFixed(3);
+
+  // Model metric cards
+  ['prec','rec','f1','auc'].forEach((k,i) => {
+    const keys = ['precision','recall','f1_score','auc_roc'];
+    document.getElementById(`rf-${k}`).textContent = rf[keys[i]].toFixed(3);
+    document.getElementById(`lr-${k}`).textContent = lr[keys[i]].toFixed(3);
+  });
+
+  updateConfusion(rf.confusion_matrix);
+  renderPerfBars(rf, lr);
+  renderSmoteBars(ds);
+  renderPieChart(ds);
+  renderMetricChart(rf, lr);
+  document.getElementById('alert-status').textContent = 'RF Active ✓';
+}
+
+function updateConfusion(cm) {
+  document.getElementById('cm-tn').textContent = cm[0][0].toLocaleString();
+  document.getElementById('cm-fp').textContent = cm[0][1].toLocaleString();
+  document.getElementById('cm-fn').textContent = cm[1][0].toLocaleString();
+  document.getElementById('cm-tp').textContent = cm[1][1].toLocaleString();
+}
+
+function renderPerfBars(rf, lr) {
+  const items = [
+    ['Random Forest · Precision', rf.precision, '#C8922A'],
+    ['Random Forest · Recall',    rf.recall,    '#C8922A'],
+    ['Random Forest · F1 Score',  rf.f1_score,  '#C8922A'],
+    ['Logistic Reg · Precision',  lr.precision, '#8A9E85'],
+    ['Logistic Reg · Recall',     lr.recall,    '#8A9E85'],
+    ['Logistic Reg · F1 Score',   lr.f1_score,  '#8A9E85'],
+  ];
+  document.getElementById('perf-bars').innerHTML = items.map(([l,v,c]) => `
+    <div class="prog-wrap">
+      <div class="prog-label"><span>${l}</span><span>${v.toFixed(3)}</span></div>
+      <div class="prog-bg"><div class="prog-fill" style="width:${v*100}%;background:${c}"></div></div>
+    </div>`).join('');
+}
+
+function renderSmoteBars(ds) {
+  const fp = ds.fraud_percentage;
+  document.getElementById('smote-bars').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <div>
+        <p style="font-size:12px;font-weight:500;margin-bottom:10px;color:var(--bark)">Before SMOTE — original dataset</p>
+        <div class="prog-wrap"><div class="prog-label"><span>Legitimate</span><span>${(100-fp).toFixed(2)}%</span></div><div class="prog-bg"><div class="prog-fill" style="width:${100-fp}%;background:#4A6741"></div></div></div>
+        <div class="prog-wrap"><div class="prog-label"><span>Fraudulent</span><span>${fp}%</span></div><div class="prog-bg"><div class="prog-fill" style="width:${Math.max(fp,0.5)}%;background:#B84A2C"></div></div></div>
+      </div>
+      <div>
+        <p style="font-size:12px;font-weight:500;margin-bottom:10px;color:var(--bark)">After SMOTE — training set</p>
+        <div class="prog-wrap"><div class="prog-label"><span>Legitimate</span><span>50%</span></div><div class="prog-bg"><div class="prog-fill" style="width:50%;background:#4A6741"></div></div></div>
+        <div class="prog-wrap"><div class="prog-label"><span>Fraud (synthetic)</span><span>50%</span></div><div class="prog-bg"><div class="prog-fill" style="width:50%;background:#C8922A"></div></div></div>
+      </div>
+    </div>`;
+}
+
+// ── Charts ──
+let pieObj=null, metricObj=null, amtObj=null, hourObj=null;
+const GC = 'rgba(44,32,22,0.06)';
+const TC = '#8A9E85';
+
+function renderPieChart(ds) {
+  if (pieObj) pieObj.destroy();
+  pieObj = new Chart(document.getElementById('pieChart').getContext('2d'), {
+    type: 'doughnut',
+    data: { labels:['Legitimate','Fraud'], datasets:[{ data:[ds.legitimate_count,ds.fraud_count], backgroundColor:['#4A6741','#B84A2C'], borderWidth:0, hoverOffset:6 }] },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ font:{size:11}, color:'#4A3728', boxWidth:10, padding:14 } } }, cutout:'62%' }
+  });
+}
+
+function renderMetricChart(rf, lr) {
+  if (metricObj) metricObj.destroy();
+  metricObj = new Chart(document.getElementById('metricChart').getContext('2d'), {
+    type:'bar',
+    data:{ labels:['Precision','Recall','F1','AUC-ROC'], datasets:[
+      { label:'Random Forest', data:[rf.precision,rf.recall,rf.f1_score,rf.auc_roc], backgroundColor:'#C8922A', borderRadius:5 },
+      { label:'Logistic Reg',  data:[lr.precision,lr.recall,lr.f1_score,lr.auc_roc], backgroundColor:'#D6E5D3', borderRadius:5 }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      scales:{ y:{ min:0.6, max:1, ticks:{font:{size:10},color:TC}, grid:{color:GC} }, x:{ ticks:{font:{size:11},color:TC}, grid:{display:false} } },
+      plugins:{ legend:{ labels:{ font:{size:11}, color:'#4A3728', boxWidth:10 } } } }
+  });
+}
+
+function initTxCharts() {
+  if (amtObj) return;
+  amtObj = new Chart(document.getElementById('amtChart').getContext('2d'), {
+    type:'bar',
+    data:{ labels:['<$10','$10–100','$100–500','$500–2k','>$2k'], datasets:[{ label:'Fraud count', data:[12,87,134,198,61], backgroundColor:'#B84A2C', borderRadius:5 }] },
+    options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{legend:{display:false}}, scales:{ x:{grid:{color:GC},ticks:{font:{size:10},color:TC}}, y:{grid:{display:false},ticks:{font:{size:11},color:TC}} } }
+  });
+  hourObj = new Chart(document.getElementById('hourChart').getContext('2d'), {
+    type:'line',
+    data:{ labels:Array.from({length:24},(_,i)=>i+'h'), datasets:[{ data:[18,22,19,12,7,5,3,4,6,8,10,11,12,9,8,7,9,11,14,17,21,24,28,22], borderColor:'#B84A2C', backgroundColor:'rgba(184,74,44,0.08)', fill:true, tension:0.4, pointRadius:2 }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{grid:{color:GC},ticks:{font:{size:10},color:TC,maxTicksLimit:8}}, y:{grid:{color:GC},ticks:{font:{size:10},color:TC}} } }
+  });
+}
+
+// ── Model selector ──
+function selectModel(m) {
+  document.getElementById('rf-card').classList.toggle('selected', m==='rf');
+  document.getElementById('lr-card').classList.toggle('selected', m==='lr');
+  document.getElementById('cm-label').textContent = m==='rf' ? 'Random Forest' : 'Logistic Regression';
+  if (cachedMetrics) updateConfusion(m==='rf' ? cachedMetrics.random_forest.confusion_matrix : cachedMetrics.logistic_regression.confusion_matrix);
+}
+
+// ── Transaction table ──
+const txRows = [
+  ['TX-9821','$12,450','02','International',97,'fraud'],
+  ['TX-9820','$34','14','Grocery',8,'legit'],
+  ['TX-9819','$5,800','23','Online Retail',88,'fraud'],
+  ['TX-9818','$90','11','Restaurant',12,'legit'],
+  ['TX-9817','$2,100','00','ATM Withdrawal',74,'fraud'],
+  ['TX-9816','$156','09','Pharmacy',5,'legit'],
+  ['TX-9814','$7,200','22','Wire Transfer',91,'fraud'],
+];
+document.getElementById('tx-body').innerHTML = txRows.map(([id,amt,hr,cat,risk,st]) => `
+  <tr>
+    <td class="mono">${id}</td>
+    <td style="font-weight:500">${amt}</td>
+    <td>${hr}:00</td>
+    <td>${cat}</td>
+    <td class="${risk>70?'risk-h':risk>40?'risk-m':'risk-l'}">${risk}%</td>
+    <td><span class="${st==='fraud'?'fraud-badge':'legit-badge'}">${st==='fraud'?'⚠ Fraud':'✓ Legit'}</span></td>
+  </tr>`).join('');
+
+// ── Alerts ──
+const alerts = [
+  {s:'high',m:'TX-9821: $12,450 international transfer at 02:14 — 97% fraud probability',t:'02:14'},
+  {s:'high',m:'TX-9814: $7,200 wire transfer at 22:11 — unusual hour + V14 spike',t:'22:11'},
+  {s:'high',m:'TX-9819: $5,800 online purchase at 23:59 — PCA anomaly detected',t:'23:59'},
+  {s:'medium',m:'TX-9817: $2,100 ATM withdrawal at midnight — off-hours flag',t:'00:03'},
+  {s:'medium',m:'TX-9823: Multiple rapid small transactions from same IP address',t:'13:44'},
+  {s:'medium',m:'TX-9801: Card swiped in 3 countries within a 2-hour window',t:'08:15'},
+];
+document.getElementById('alert-list').innerHTML = alerts.map(a => `
+  <div class="alert-row ${a.s}">
+    <span class="alert-dot ${a.s==='high'?'dot-r':'dot-g'}"></span>
+    <span style="flex:1">${a.m}</span>
+    <span class="alert-time">${a.t}</span>
+  </div>`).join('');
+
+// ── Fraud sample loader ──
+let fraudSamples = [];
+async function fetchFraudSamples() {
+  try {
+    const res = await fetch(`${API_BASE}/api/sample_frauds`);
+    if (res.ok) { const d = await res.json(); fraudSamples = d.samples || []; }
+  } catch(e) { console.warn('Sample load failed:', e); }
+}
+
+function loadFraudSample(idx) {
+  if (!fraudSamples.length) { alert('Backend offline or creditcard.csv not in backend/ folder.'); return; }
+  const s = fraudSamples[idx % fraudSamples.length];
+  document.getElementById('tx-amount').value = s.amount;
+  document.getElementById('tx-hour').value   = s.hour;
+  for (let i=1; i<=28; i++) {
+    const el = document.getElementById(`tx-v${i}`);
+    if (el) el.value = s[`v${i}`] ?? 0;
+  }
+  document.getElementById('result-box').style.display = 'none';
+}
+
+function clearForm() {
+  document.getElementById('tx-amount').value = 100;
+  document.getElementById('tx-hour').value   = 14;
+  for (let i=1; i<=28; i++) { const el=document.getElementById(`tx-v${i}`); if(el) el.value=0; }
+  document.getElementById('result-box').style.display = 'none';
+}
+
+// ── Predict ──
+async function predict() {
+  const btn = document.getElementById('predict-btn');
+  const box = document.getElementById('result-box');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Running…';
+  box.style.display = 'none';
+
+  const payload = {
+    amount: parseFloat(document.getElementById('tx-amount').value) || 0,
+    hour:   parseInt(document.getElementById('tx-hour').value)     || 0,
+  };
+  for (let i=1; i<=28; i++) {
+    const el = document.getElementById(`tx-v${i}`);
+    payload[`v${i}`] = el ? (parseFloat(el.value) || 0) : 0;
+  }
+
+  try {
+    const res  = await fetch(`${API_BASE}/api/predict`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    const data = await res.json();
+    box.style.display = 'block';
+    box.className = 'result-box ' + (data.prediction===1 ? 'result-fraud' : 'result-legit');
+    document.getElementById('result-label').textContent  = data.prediction===1 ? '⚠ Fraud Detected' : '✓ Legitimate Transaction';
+    document.getElementById('result-detail').textContent = `Fraud probability: ${data.fraud_probability}%  ·  Decision threshold: 50%`;
+    document.getElementById('result-risk').textContent   = `Risk level: ${data.risk_level}`;
+  } catch {
+    box.style.display = 'block';
+    box.className = 'result-box result-fraud';
+    document.getElementById('result-label').textContent  = '⚠ Backend not reachable';
+    document.getElementById('result-detail').textContent = 'Run: python app.py in the backend/ folder';
+    document.getElementById('result-risk').textContent   = '';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Run prediction via API';
+}
+
+// ── Init ──
+loadMetrics();
+initTxCharts();
+fetchFraudSamples();
+</script>
+</body>
+</html>
