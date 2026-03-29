@@ -1,4 +1,4 @@
-# 🛡️ DhanRaksha — Intelligent Fraud Detection System
+# 🛡️ Dhan₹aksha — Intelligent Fraud Detection System
 
 Guarding every rupee with intelligent precision.
 
@@ -6,7 +6,7 @@ Guarding every rupee with intelligent precision.
 
 ## Overview
 
-DhanRaksha is an end-to-end machine learning–powered fraud detection system designed to identify suspicious financial transactions in real time. It integrates a trained ML model, a Flask backend API, and an interactive frontend dashboard to deliver predictions, analytics, and performance insights.
+Dhan₹aksha is an end-to-end machine learning–powered fraud detection system designed to identify suspicious financial transactions in real time. It integrates a trained ML model, a Flask backend API, and an interactive frontend dashboard to deliver predictions, analytics, and performance insights.
 
 ---
 
@@ -14,7 +14,7 @@ DhanRaksha is an end-to-end machine learning–powered fraud detection system de
 
 Financial fraud detection is a challenging problem due to extreme class imbalance, evolving fraud patterns, and the need for real-time prediction. In real-world datasets, fraudulent transactions account for less than 0.2% of all transactions, making it difficult for traditional systems to detect anomalies effectively.
 
-DhanRaksha addresses this by leveraging machine learning models capable of learning hidden patterns and detecting fraud with high precision and recall.
+Dhan₹aksha addresses this by leveraging machine learning models capable of learning hidden patterns and detecting fraud with high precision and recall.
 
 ---
 
